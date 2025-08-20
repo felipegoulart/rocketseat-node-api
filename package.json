@@ -3,19 +3,21 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "tsx --watch src/server.ts",
-    "knex": "node --experimental-loader tsx ./node_modules/.bin/knex",
+    "dev": "node --experimental-transform-types --watch src/server.ts",
+    "build": "tsup",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.12.4",
+  "packageManager": "pnpm@10.15.0",
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/node": "^22.15.21",
     "prisma": "^6.11.1",
+    "tsup": "^8.5.0",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
