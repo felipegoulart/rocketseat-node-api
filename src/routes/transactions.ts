@@ -121,4 +121,31 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
       return reply.send({ data: transactions });
     },
   });
+
+  app.withTypeProvider<ZodTypeProvider>().route({
+    method: "GET",
+    url: "/summary",
+    schema: {
+      response: {
+        200: z.object({
+          data: z.object({
+            amount: z.number(),
+          }),
+        }),
+      },
+    },
+    handler: async (request, reply) => {
+      const { _sum } = await prisma.transaction.aggregate({
+        _sum: {
+          amount: true,
+        },
+      });
+
+      return reply.status(200).send({
+        data: {
+          amount: _sum.amount ?? 0,
+        },
+      });
+    },
+  });
 };
