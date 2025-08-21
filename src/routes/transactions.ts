@@ -11,6 +11,32 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
 ) => {
   app.withTypeProvider<ZodTypeProvider>().route({
+    method: "POST",
+    url: "/",
+    schema: {
+      body: z.object({
+        title: z.string(),
+        amount: z.number(),
+        type: z.enum(["CREDIT", "DEBIT"]),
+      }),
+    },
+    handler: async (request, reply) => {
+      const { title, amount, type } = request.body;
+
+      await prisma.transaction.create({
+        data: {
+          amount,
+          title,
+          type,
+          sessionId: crypto.randomUUID(),
+        },
+      });
+
+      return reply.status(201).send();
+    },
+  });
+
+  app.withTypeProvider<ZodTypeProvider>().route({
     method: "GET",
     url: "/:id",
     schema: {
@@ -93,32 +119,6 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
       });
 
       return reply.send({ data: transactions });
-    },
-  });
-
-  app.withTypeProvider<ZodTypeProvider>().route({
-    method: "POST",
-    url: "/",
-    schema: {
-      body: z.object({
-        title: z.string(),
-        amount: z.number(),
-        type: z.enum(["CREDIT", "DEBIT"]),
-      }),
-    },
-    handler: async (request, reply) => {
-      const { title, amount, type } = request.body;
-
-      await prisma.transaction.create({
-        data: {
-          amount,
-          title,
-          type,
-          sessionId: crypto.randomUUID(),
-        },
-      });
-
-      return reply.status(201).send();
     },
   });
 };
