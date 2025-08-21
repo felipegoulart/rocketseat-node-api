@@ -10,8 +10,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "env('DATABASE_URL')"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Transaction {
@@ -19,6 +19,7 @@ model Transaction {
   sessionId String   @map("session_id")
   title     String
   amount    Float
+  type      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
