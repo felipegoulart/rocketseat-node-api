@@ -76,6 +76,7 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
       const transaction = await prisma.transaction.findUnique({
         where: {
           id,
+          sessionId: request.cookies.sessionId,
         },
         select: {
           id: true,
@@ -117,6 +118,9 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
     preHandler: [checkSessionIdExists],
     handler: async (request, reply) => {
       const transactions = await prisma.transaction.findMany({
+        where: {
+          sessionId: request.cookies.sessionId,
+        },
         select: {
           id: true,
           title: true,
