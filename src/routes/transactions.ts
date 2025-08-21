@@ -1,4 +1,4 @@
-import crypto from "node:crypto";
+import { randomUUID } from "node:crypto";
 import type { FastifyInstance } from "fastify";
 import type {
   FastifyPluginAsyncZod,
@@ -23,12 +23,21 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
     handler: async (request, reply) => {
       const { title, amount, type } = request.body;
 
+      let sessionId = request.cookies.sessionId;
+      if (!sessionId) {
+        sessionId = randomUUID();
+        reply.setCookie("sessionId", sessionId, {
+          path: "/",
+          maxAge: 60 * 60 * 24 * 30, // 7 days
+        });
+      }
+
       await prisma.transaction.create({
         data: {
           amount,
           title,
           type,
-          sessionId: crypto.randomUUID(),
+          sessionId,
         },
       });
 
