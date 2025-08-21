@@ -2,9 +2,9 @@
 
 ## Requisitos funcionais
 
-- [ ] O usuário deve poder criar uma nova transação;
-- [ ] O usuário deve poder listar todas as transações;
-- [ ] O usuário deve poder listar uma única transação por ID;
+- [X] O usuário deve poder criar uma nova transação;
+- [X] O usuário deve poder listar todas as transações;
+- [X] O usuário deve poder listar uma única transação por ID;
 - [ ] O usuário deve poder atualizar uma transação por ID;
 - [ ] O usuário deve poder deletar uma transação por ID;
 
