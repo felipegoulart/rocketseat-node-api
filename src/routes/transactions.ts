@@ -17,7 +17,7 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
       body: z.object({
         title: z.string(),
         amount: z.number(),
-        type: z.enum(["credit", "debit"]),
+        type: z.enum(["CREDIT", "DEBIT"]),
       }),
     },
     handler: async (request, reply) => {
