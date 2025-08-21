@@ -6,6 +6,7 @@ import type {
 } from "fastify-type-provider-zod";
 import z from "zod";
 import { prisma } from "../infra/database/prisma";
+import { checkSessionIdExists } from "../middlewares/check-session-id-exists";
 
 export const transactionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
@@ -28,7 +29,7 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
         sessionId = randomUUID();
         reply.setCookie("sessionId", sessionId, {
           path: "/",
-          maxAge: 60 * 60 * 24 * 30, // 7 days
+          maxAge: 60 * 60 * 24 * 30, // 30 days
         });
       }
 
@@ -68,6 +69,7 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
         }),
       },
     },
+    preHandler: [checkSessionIdExists],
     handler: async (request, reply) => {
       const { id } = request.params;
 
@@ -112,6 +114,7 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
         }),
       },
     },
+    preHandler: [checkSessionIdExists],
     handler: async (request, reply) => {
       const transactions = await prisma.transaction.findMany({
         select: {
@@ -143,6 +146,7 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
         }),
       },
     },
+    preHandler: [checkSessionIdExists],
     handler: async (request, reply) => {
       const { _sum } = await prisma.transaction.aggregate({
         _sum: {
