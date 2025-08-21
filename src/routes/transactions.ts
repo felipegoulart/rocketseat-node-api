@@ -12,6 +12,54 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
 ) => {
   app.withTypeProvider<ZodTypeProvider>().route({
     method: "GET",
+    url: "/:id",
+    schema: {
+      params: z.object({
+        id: z.uuid(),
+      }),
+      response: {
+        200: z.object({
+          data: z.object({
+            id: z.uuid(),
+            title: z.string(),
+            amount: z.number(),
+            type: z.enum(["CREDIT", "DEBIT"]),
+            createdAt: z.date(),
+            updatedAt: z.date(),
+          }),
+        }),
+        404: z.object({
+          message: z.string(),
+        }),
+      },
+    },
+    handler: async (request, reply) => {
+      const { id } = request.params;
+
+      const transaction = await prisma.transaction.findUnique({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          title: true,
+          amount: true,
+          type: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      if (!transaction) {
+        return reply.status(404).send({ message: "Transaction not found." });
+      }
+
+      return reply.send({ data: transaction });
+    },
+  });
+
+  app.withTypeProvider<ZodTypeProvider>().route({
+    method: "GET",
     url: "/",
     schema: {
       response: {
