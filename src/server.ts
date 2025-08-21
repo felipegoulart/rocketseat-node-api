@@ -1,3 +1,4 @@
+import cookie from "@fastify/cookie";
 import fastify from "fastify";
 import {
   hasZodFastifySchemaValidationErrors,
@@ -9,6 +10,10 @@ import { env } from "./env";
 import { transactionRoutes } from "./routes/transactions";
 
 const app = fastify();
+
+app.register(cookie, {
+  secret: env?.COOKIE_SECRET,
+});
 
 app.setSerializerCompiler(serializerCompiler);
 app.setValidatorCompiler(validatorCompiler);
