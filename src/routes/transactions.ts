@@ -152,15 +152,27 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
     },
     preHandler: [checkSessionIdExists],
     handler: async (request, reply) => {
-      const { _sum } = await prisma.transaction.aggregate({
-        _sum: {
+      const result = await prisma.transaction.findMany({
+        select: {
           amount: true,
+          type: true,
+        },
+        where: {
+          sessionId: request.cookies.sessionId,
         },
       });
 
+      const amount = result.reduce((acc, curr) => {
+        if (curr.type === "DEBIT") {
+          return acc - curr.amount;
+        }
+
+        return acc + curr.amount;
+      }, 0);
+
       return reply.status(200).send({
         data: {
-          amount: _sum.amount ?? 0,
+          amount,
         },
       });
     },
