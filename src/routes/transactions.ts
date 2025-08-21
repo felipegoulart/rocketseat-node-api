@@ -11,6 +11,44 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
   app: FastifyInstance,
 ) => {
   app.withTypeProvider<ZodTypeProvider>().route({
+    method: "GET",
+    url: "/",
+    schema: {
+      response: {
+        200: z.object({
+          data: z.array(
+            z.object({
+              id: z.uuid(),
+              title: z.string(),
+              amount: z.number(),
+              type: z.enum(["CREDIT", "DEBIT"]),
+              createdAt: z.date(),
+              updatedAt: z.date(),
+            }),
+          ),
+        }),
+      },
+    },
+    handler: async (request, reply) => {
+      const transactions = await prisma.transaction.findMany({
+        select: {
+          id: true,
+          title: true,
+          amount: true,
+          type: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      return reply.send({ data: transactions });
+    },
+  });
+
+  app.withTypeProvider<ZodTypeProvider>().route({
     method: "POST",
     url: "/",
     schema: {
