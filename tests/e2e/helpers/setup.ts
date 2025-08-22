@@ -1,11 +1,10 @@
 import { execSync } from "node:child_process";
 import { afterAll, beforeAll } from "vitest";
 
-beforeAll(async () => {
+beforeAll(() => {
   console.log("Up the database... 🚀");
   execSync("docker compose up -d db-tests");
 
-  // Espera o banco de dados estar pronto para conexões
   console.log("Waiting for database is ready...");
   execSync(
     "sh -c 'while ! docker compose exec -T db-tests pg_isready --host=localhost; do sleep 1; done'",
@@ -16,8 +15,12 @@ beforeAll(async () => {
   console.log("Database is ready! ✨");
 
   execSync("pnpm prisma migrate deploy");
+  console.log("Database migrated! ✨");
+  console.log("Starting tests... 🚀");
 });
 
-afterAll(async () => {
-  execSync("docker compose down db-tests");
+afterAll(() => {
+  console.log("Stopping tests... 🚀");
+  execSync("docker compose down -v");
 });
+console.log("Database stopped! ✨");
