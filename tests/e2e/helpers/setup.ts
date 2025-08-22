@@ -1,6 +1,5 @@
 import { execSync } from "node:child_process";
-import { afterEach } from "node:test";
-import { afterAll, beforeAll, beforeEach } from "vitest";
+import { afterAll, beforeAll } from "vitest";
 
 beforeAll(async () => {
   console.log("Up the database... 🚀");
