@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx --env-file .env --watch src/server.ts",
     "build": "tsup",
-    "test": "dotenv -- vitest"
+    "test:e2e": "dotenv -e .env.test -- vitest --config tests/e2e/vitest.config.ts"
   },
   "keywords": [],
   "author": "",
