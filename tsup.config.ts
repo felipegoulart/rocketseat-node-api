@@ -1,9 +1,8 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/server.ts"],
-  splitting: false,
+  entry: ["src"],
+  format: ["esm"],
   sourcemap: true,
   clean: true,
-  external: ["fastify", "zod"],
 });
