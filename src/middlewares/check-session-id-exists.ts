@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 export function checkSessionIdExists(
   request: FastifyRequest,
   reply: FastifyReply,
+  done: () => void,
 ) {
   const sessionId = request.cookies.sessionId;
   if (!sessionId) {
@@ -13,4 +14,6 @@ export function checkSessionIdExists(
     });
     return;
   }
+
+  done();
 }
