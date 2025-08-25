@@ -61,11 +61,26 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
     },
     preHandler: [checkSessionIdExists],
     handler: async (request, reply) => {
+      const { id } = request.params;
       const { title, amount, type } = request.body;
 
-      const transaction = await prisma.transaction.update({
+      const transaction = await prisma.transaction.findUnique({
         where: {
-          id: request.params.id,
+          id,
+          sessionId: request.cookies.sessionId,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!transaction) {
+        return reply.status(404).send({ message: "Transaction not found." });
+      }
+
+      const result = await prisma.transaction.update({
+        where: {
+          id,
           sessionId: request.cookies.sessionId,
         },
         data: {
@@ -75,7 +90,7 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
         },
       });
 
-      return reply.status(200).send({ data: transaction });
+      return reply.status(200).send({ data: result });
     },
   });
 
