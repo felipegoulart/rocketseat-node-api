@@ -120,4 +120,31 @@ describe("transactions routes", () => {
       }),
     );
   });
+
+  it("Should remove a transaction by id", async () => {
+    const createTransactionResponse = await supertest(app.server)
+      .post("/transactions")
+      .send({
+        title: "Credit transaction",
+        amount: 1000,
+        type: "CREDIT",
+      });
+
+    const cookies = createTransactionResponse.get("Set-Cookie");
+    if (!cookies) {
+      throw new Error("No cookies found");
+    }
+
+    const listTransactionsResponse = await supertest(app.server)
+      .get("/transactions")
+      .set("Cookie", cookies);
+
+    const transactionId = listTransactionsResponse.body.data[0].id;
+
+    const removeTransactionResponse = await supertest(app.server)
+      .delete(`/transactions/${transactionId}`)
+      .set("Cookie", cookies);
+
+    expect(removeTransactionResponse.statusCode).toEqual(204);
+  });
 });
