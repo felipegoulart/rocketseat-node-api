@@ -47,6 +47,39 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
   });
 
   app.withTypeProvider<ZodTypeProvider>().route({
+    method: "PUT",
+    url: "/:id",
+    schema: {
+      params: z.object({
+        id: z.uuid(),
+      }),
+      body: z.object({
+        title: z.string().optional(),
+        amount: z.number().positive().optional(),
+        type: z.enum(["CREDIT", "DEBIT"]).optional(),
+      }),
+    },
+    preHandler: [checkSessionIdExists],
+    handler: async (request, reply) => {
+      const { title, amount, type } = request.body;
+
+      const transaction = await prisma.transaction.update({
+        where: {
+          id: request.params.id,
+          sessionId: request.cookies.sessionId,
+        },
+        data: {
+          amount,
+          title,
+          type,
+        },
+      });
+
+      return reply.status(200).send({ data: transaction });
+    },
+  });
+
+  app.withTypeProvider<ZodTypeProvider>().route({
     method: "GET",
     url: "/:id",
     schema: {
