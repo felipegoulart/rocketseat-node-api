@@ -147,4 +147,40 @@ describe("transactions routes", () => {
 
     expect(removeTransactionResponse.statusCode).toEqual(204);
   });
+
+  it("Should update a transaction by id", async () => {
+    const createTransactionResponse = await supertest(app.server)
+      .post("/transactions")
+      .send({
+        title: "Credit transaction",
+        amount: 1000,
+        type: "CREDIT",
+      });
+
+    const cookies = createTransactionResponse.get("Set-Cookie");
+    if (!cookies) {
+      throw new Error("No cookies found");
+    }
+
+    const listTransactionsResponse = await supertest(app.server)
+      .get("/transactions")
+      .set("Cookie", cookies);
+
+    const transactionId = listTransactionsResponse.body.data[0].id;
+
+    const updateTransactionResponse = await supertest(app.server)
+      .put(`/transactions/${transactionId}`)
+      .set("Cookie", cookies)
+      .send({
+        amount: 2000,
+      });
+
+    expect(updateTransactionResponse.statusCode).toEqual(200);
+    expect(updateTransactionResponse.body.data).toEqual(
+      expect.objectContaining({
+        title: "Credit transaction",
+        amount: 2000,
+      }),
+    );
+  });
 });
