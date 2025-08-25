@@ -6,7 +6,7 @@
 - [X] O usuário deve poder listar todas as transações;
 - [X] O usuário deve poder listar uma única transação por ID;
 - [ ] O usuário deve poder atualizar uma transação por ID;
-- [ ] O usuário deve poder deletar uma transação por ID;
+- [X] O usuário deve poder deletar uma transação por ID;
 
 ## Regras de negócio
 
