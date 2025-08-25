@@ -10,9 +10,9 @@
 
 ## Regras de negócio
 
-- [ ] A transação pode ser do tipo **crédito** (soma ao valor total) ou **débito** (subtrai do valor total);
+- [X] A transação pode ser do tipo **crédito** (soma ao valor total) ou **débito** (subtrai do valor total);
 - [ ] O valor da transação (`amount`) deve ser sempre um número positivo. O `type` da transação define se é uma entrada ou saída;
-- [ ] O título (`title`) da transação é obrigatório;
-- [ ] Deve ser possível identificar o usuário entre as requisições através de um `sessionId` armazenado nos cookies;
-- [ ] O usuário só pode visualizar, editar e apagar as transações que ele mesmo criou (mesma `sessionId`);
-- [ ] O usuário deve poder visualizar um resumo da sua conta, incluindo o saldo total;
+- [X] O título (`title`) da transação é obrigatório;
+- [X] Deve ser possível identificar o usuário entre as requisições através de um `sessionId` armazenado nos cookies;
+- [X] O usuário só pode visualizar, editar e apagar as transações que ele mesmo criou (mesma `sessionId`);
+- [X] O usuário deve poder visualizar um resumo da sua conta, incluindo o saldo total;
