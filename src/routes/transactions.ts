@@ -177,4 +177,41 @@ export const transactionRoutes: FastifyPluginAsyncZod = async (
       });
     },
   });
+
+  app.withTypeProvider<ZodTypeProvider>().route({
+    method: "DELETE",
+    url: "/:id",
+    schema: {
+      params: z.object({
+        id: z.string().uuid(),
+      }),
+      response: {
+        204: z.object({}),
+        404: z.object({ message: z.string() }),
+      },
+    },
+    preHandler: [checkSessionIdExists],
+    handler: async (request, reply) => {
+      const { id } = request.params;
+
+      const transaction = await prisma.transaction.findUnique({
+        where: {
+          id,
+          sessionId: request.cookies.sessionId,
+        },
+      });
+
+      if (!transaction) {
+        return reply.status(404).send({ message: "Transaction not found." });
+      }
+
+      await prisma.transaction.delete({
+        where: {
+          id,
+        },
+      });
+
+      return reply.status(204).send();
+    },
+  });
 };
